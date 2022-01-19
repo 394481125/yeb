@@ -1,0 +1,30 @@
+server:
+  port: 8083
+spring:
+  mail:
+    host: smtp.sina.com
+    protocol: smtps
+    password: xxxxxx
+    default-encoding: utf-8
+    username: xiaohai123dudu@sina.com
+    port: 465
+
+  rabbitmq:
+    host: 192.168.10.100
+    port: 5672
+    username: guest
+    password: guest
+
+  #redis
+  redis:
+    host: 192.168.10.100
+    port: 6379
+    database: 0
+    timeout: 10000ms
+    password: root
+    lettuce:
+      pool:
+        max-active: 1024
+        max-wait: 10000ms
+        max-idle: 200
+        min-idle: 5

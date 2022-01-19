@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xxxx.server.mapper.EmployeeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.xxxx.server.pojo.Employee">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="gender" property="gender" />
+        <result column="birthday" property="birthday" />
+        <result column="idCard" property="idCard" />
+        <result column="wedlock" property="wedlock" />
+        <result column="nationId" property="nationId" />
+        <result column="nativePlace" property="nativePlace" />
+        <result column="politicId" property="politicId" />
+        <result column="email" property="email" />
+        <result column="phone" property="phone" />
+        <result column="address" property="address" />
+        <result column="departmentId" property="departmentId" />
+        <result column="jobLevelId" property="jobLevelId" />
+        <result column="posId" property="posId" />
+        <result column="engageForm" property="engageForm" />
+        <result column="tiptopDegree" property="tiptopDegree" />
+        <result column="specialty" property="specialty" />
+        <result column="school" property="school" />
+        <result column="beginDate" property="beginDate" />
+        <result column="workState" property="workState" />
+        <result column="workID" property="workID" />
+        <result column="contractTerm" property="contractTerm" />
+        <result column="conversionTime" property="conversionTime" />
+        <result column="notWorkDate" property="notWorkDate" />
+        <result column="beginContract" property="beginContract" />
+        <result column="endContract" property="endContract" />
+        <result column="workAge" property="workAge" />
+        <result column="salaryId" property="salaryId" />
+    </resultMap>
+
+    <resultMap id="employeeWithSalary" extends="BaseResultMap" type="com.xxxx.server.pojo.Employee">
+        <association property="salary" javaType="com.xxxx.server.pojo.Salary">
+            <id column="sid" property="id"/>
+            <result column="sname" property="name"/>
+            <result column="basicSalary" property="basicSalary"/>
+            <result column="bonus" property="bonus"/>
+            <result column="lunchSalary" property="lunchSalary"/>
+            <result column="trafficSalary" property="trafficSalary"/>
+            <result column="allSalary" property="allSalary"/>
+            <result column="pensionBase" property="pensionBase"/>
+            <result column="pensionPer" property="pensionPer"/>
+            <result column="medicalPer" property="medicalPer"/>
+            <result column="medicalBase" property="medicalBase"/>
+            <result column="accumulationFundBase" property="accumulationFundBase"/>
+            <result column="accumulationFundPer" property="accumulationFundPer"/>
+        </association>
+        <association property="department" javaType="com.xxxx.server.pojo.Department">
+            <result column="dname" property="name"></result>
+        </association>
+    </resultMap>
+
+    <resultMap id="empInfo" type="com.xxxx.server.vo.EmpInfo" extends="BaseResultMap">
+        <association property="department" javaType="com.xxxx.server.pojo.Department">
+            <result property="id" column="dep_id"></result>
+            <result property="name" column="dep_name"></result>
+            <result property="parentId" column="dep_parentId"></result>
+            <result property="depPath" column="dep_depPath"></result>
+            <result property="enabled" column="dep_enabled"></result>
+            <result property="isParent" column="dep_isParent"></result>
+        </association>
+        <association property="joblevel" javaType="com.xxxx.server.pojo.Joblevel">
+            <result property="id" column="job_id"></result>
+            <result property="name" column="job_name"></result>
+            <result property="titleLevel" column="job_titleLevel"></result>
+            <result property="createDate" column="job_createDate"></result>
+            <result property="enabled" column="job_enabled"></result>
+        </association>
+        <association property="nation" javaType="com.xxxx.server.pojo.Nation">
+            <result property="id" column="nat_id"></result>
+            <result property="name" column="nat_name"></result>
+        </association>
+        <association property="politicsStatus" javaType="com.xxxx.server.pojo.PoliticsStatus">
+            <result property="id" column="pol_id"></result>
+            <result property="name" column="pol_name"></result>
+        </association>
+        <association property="position" javaType="com.xxxx.server.pojo.Position">
+            <result property="id" column="pos_id"></result>
+            <result property="name" column="pos_name"></result>
+            <result property="createDate" column="pos_createDate"></result>
+            <result property="enabled" column="pos_enabled"></result>
+        </association>
+        <association property="salary" javaType="com.xxxx.server.pojo.Salary">
+            <result property="id" column="s_id"></result>
+            <result property="basicSalary" column="s_basicSalary"></result>
+            <result property="bonus" column="s_bonus"></result>
+            <result property="lunchSalary" column="s_lunchSalary"></result>
+            <result property="trafficSalary" column="s_trafficSalary"></result>
+            <result property="allSalary" column="s_allSalary"></result>
+            <result property="pensionBase" column="s_pensionBase"></result>
+            <result property="pensionPer" column="s_pensionPer"></result>
+            <result property="createDate" column="s_createDate"></result>
+            <result property="medicalBase" column="s_medicalBase"></result>
+            <result property="medicalPer" column="s_medicalPer"></result>
+            <result property="accumulationFundPer" column="s_accumulationFundPer"></result>
+            <result property="accumulationFundBase" column="s_accumulationFundBase"></result>
+            <result property="name" column="s_name"></result>
+        </association>
+    </resultMap>
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, gender, birthday, idCard, wedlock, nationId, nativePlace, politicId, email, phone, address, departmentId, jobLevelId, posId, engageForm, tiptopDegree, specialty, school, beginDate, workState, workID, contractTerm, conversionTime, notWorkDate, beginContract, endContract, workAge, salaryId
+    </sql>
+
+    <!--修改工资账套-->
+    <update id="updateEmployeeSalary">
+        update
+            t_employee
+        set
+            salaryId = #{sid}
+        where
+            id=#{eid}
+    </update>
+    <!--查询员工账套-->
+    <select id="getEmployeeWithSalary" resultMap="employeeWithSalary">
+        SELECT
+            e.*,
+            d.`name` dname,
+            s.id sid,
+            s.`name` sname,
+            s.basicSalary,
+            s.bonus,
+            s.lunchSalary,
+            s.trafficSalary,
+            s.allSalary,
+            s.pensionBase,
+            s.pensionPer,
+            s.medicalPer,
+            s.medicalBase,
+            s.accumulationFundBase,
+            s.accumulationFundPer
+        FROM
+            t_employee e
+            LEFT JOIN t_salary s ON e.salaryId = s.id
+            LEFT JOIN t_department d ON e.departmentId = d.id
+        ORDER BY
+            e.id
+    </select>
+    <!--    查询员工的基本信息-->
+    <select id="selectPageEmployee" parameterType="com.xxxx.server.vo.EmployeePage" resultMap="empInfo">
+        SELECT
+        s.id s_id,
+        s.basicSalary s_basicSalary,
+        s.bonus s_bonus,
+        s.lunchSalary s_lunchSalary,
+        s.trafficSalary s_trafficSalary,
+        s.allSalary s_allSalary,
+        s.pensionBase s_pensionBase,
+        s.pensionPer s_pensionPer,
+        s.createDate s_createDate,
+        s.medicalBase s_medicalBase,
+        s.medicalPer s_medicalPer,
+        s.accumulationFundPer s_accumulationFundPer,
+        s.accumulationFundBase s_accumulationFundBase,
+        s.name s_name,
+        pos.id pos_id,
+        pos.name pos_name,
+        pos.createDate pos_createDate,
+        pos.enabled pos_enabled,
+        p.id pol_id,
+        p.name pol_name,
+        n.id nat_id,
+        n.name nat_name,
+        d.id dep_id,
+        d.name dep_name,
+        d.parentId dep_parentId,
+        d.depPath dep_depPath,
+        d.enabled dep_enabled,
+        d.isParent dep_isParent,
+        j.id job_id,
+        j.name job_name,
+        j.titleLevel job_titleLevel,
+        j.createDate job_createDate,
+        j.enabled job_enabled,
+        e.*
+        FROM
+        t_employee e LEFT JOIN t_department d ON e.departmentId = d.id
+        LEFT JOIN t_joblevel j ON e.jobLevelId=j.id
+        LEFT JOIN t_nation n ON n.id=e.nationId
+        LEFT JOIN t_politics_status p ON p.id= e.politicId
+        LEFT JOIN t_position pos ON pos.id=e.posId
+        LEFT JOIN t_salary s ON e.salaryId=s.id
+        <where>
+            <if test=" param2.name !=null and param2.name !=''">
+                and e.name like CONCAT('%',#{param2.name},'%')
+            </if>
+            <if test=" param2.politicId !=null and param2.politicId !=''">
+                and e.politicId =#{param2.politicId}
+            </if>
+            <if test=" param2.nationId !=null and param2.nationId !=''">
+                and e.nationId = #{param2.nationId}
+            </if>
+            <if test=" param2.posId !=null and param2.posId !=''">
+                and e.posId = #{param2.posId}
+            </if>
+            <if test=" param2.jobLevelId !=null and param2.jobLevelId !=''">
+                and e.jobLevelId = #{param2.jobLevelId}
+            </if>
+            <if test=" param2.engageForm !=null and param2.engageForm !=''">
+                and e.engageForm = #{param2.engageForm}
+            </if>
+            <if test=" param2.departmentId !=null and param2.departmentId !=''">
+                and e.departmentId = #{param2.departmentId}
+            </if>
+            <if test=" param2.beginDateScope != null and param2.beginDateScope !='' ">
+                and beginDate between #{param2.begin} and #{param2.end}
+            </if>
+        </where>
+    </select>
+    <select id="selectByIdCard" parameterType="string" resultType="com.xxxx.server.pojo.Employee">
+        select * from t_employee where idCard=#{idCard}
+    </select>
+    <select id="queryEmpInfoById" resultMap="empInfo" parameterType="java.lang.Integer">
+        SELECT
+            s.id s_id,
+            s.basicSalary s_basicSalary,
+            s.bonus s_bonus,
+            s.lunchSalary s_lunchSalary,
+            s.trafficSalary s_trafficSalary,
+            s.allSalary s_allSalary,
+            s.pensionBase s_pensionBase,
+            s.pensionPer s_pensionPer,
+            s.createDate s_createDate,
+            s.medicalBase s_medicalBase,
+            s.medicalPer s_medicalPer,
+            s.accumulationFundPer s_accumulationFundPer,
+            s.accumulationFundBase s_accumulationFundBase,
+            s.name s_name,
+            pos.id pos_id,
+            pos.name pos_name,
+            pos.createDate pos_createDate,
+            pos.enabled pos_enabled,
+            p.id pol_id,
+            p.name pol_name,
+            n.id nat_id,
+            n.name nat_name,
+            d.id dep_id,
+            d.name dep_name,
+            d.parentId dep_parentId,
+            d.depPath dep_depPath,
+            d.enabled dep_enabled,
+            d.isParent dep_isParent,
+            j.id job_id,
+            j.name job_name,
+            j.titleLevel job_titleLevel,
+            j.createDate job_createDate,
+            j.enabled job_enabled,
+            e.*
+        FROM
+            t_employee e
+        LEFT JOIN
+            t_department d ON e.departmentId = d.id
+        LEFT JOIN
+            t_joblevel j ON e.jobLevelId=j.id
+        LEFT JOIN
+            t_nation n ON n.id=e.nationId
+        LEFT JOIN
+            t_politics_status p ON p.id= e.politicId
+        LEFT JOIN
+            t_position pos ON pos.id=e.posId
+        LEFT JOIN
+            t_salary s ON e.salaryId=s.id
+        where e.id=#{id}
+    </select>
+
+    <select id="getAllEmployee" resultMap="empInfo">
+        SELECT
+            s.id s_id,
+            s.basicSalary s_basicSalary,
+            s.bonus s_bonus,
+            s.lunchSalary s_lunchSalary,
+            s.trafficSalary s_trafficSalary,
+            s.allSalary s_allSalary,
+            s.pensionBase s_pensionBase,
+            s.pensionPer s_pensionPer,
+            s.createDate s_createDate,
+            s.medicalBase s_medicalBase,
+            s.medicalPer s_medicalPer,
+            s.accumulationFundPer s_accumulationFundPer,
+            s.accumulationFundBase s_accumulationFundBase,
+            s.name s_name,
+            pos.id pos_id,
+            pos.name pos_name,
+            pos.createDate pos_createDate,
+            pos.enabled pos_enabled,
+            p.id pol_id,
+            p.name pol_name,
+            n.id nat_id,
+            n.name nat_name,
+            d.id dep_id,
+            d.name dep_name,
+            d.parentId dep_parentId,
+            d.depPath dep_depPath,
+            d.enabled dep_enabled,
+            d.isParent dep_isParent,
+            j.id job_id,
+            j.name job_name,
+            j.titleLevel job_titleLevel,
+            j.createDate job_createDate,
+            j.enabled job_enabled,
+            e.*
+        FROM
+            t_employee e
+        LEFT JOIN
+            t_department d ON e.departmentId = d.id
+        LEFT JOIN
+            t_joblevel j ON e.jobLevelId=j.id
+        LEFT JOIN
+            t_nation n ON n.id=e.nationId
+        LEFT JOIN
+            t_politics_status p ON p.id= e.politicId
+        LEFT JOIN
+            t_position pos ON pos.id=e.posId
+        LEFT JOIN
+            t_salary s ON e.salaryId=s.id
+    </select>
+
+
+</mapper>

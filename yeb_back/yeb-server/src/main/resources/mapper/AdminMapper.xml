@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xxxx.server.mapper.AdminMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.xxxx.server.pojo.Admin">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="phone" property="phone" />
+        <result column="telephone" property="telephone" />
+        <result column="address" property="address" />
+        <result column="enabled" property="enabled" />
+        <result column="username" property="username" />
+        <result column="password" property="password" />
+        <result column="userFace" property="userFace" />
+        <result column="remark" property="remark" />
+    </resultMap>
+    <resultMap id="AdminRoleMap" type="com.xxxx.server.pojo.Admin" extends="BaseResultMap">
+        <collection property="roles" ofType="com.xxxx.server.pojo.Role">
+            <result column="nameZh" property="nameZh"/>
+        </collection>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, phone, telephone, address, enabled, username, password, userFace, remark
+    </sql>
+    <insert id="addAdminRole">
+        insert
+        into
+            t_admin_role(adminid,rid)
+        values
+            (#{adminId},#{rid})
+    </insert>
+
+    <update id="updateAdminEnable">
+        UPDATE t_admin
+        SET enabled = #{enabled}
+        WHERE
+            id = #{id}
+    </update>
+
+    <delete id="deleteAdminById" parameterType="java.lang.Integer">
+        delete
+        from
+            t_admin
+        where
+            id=#{id}
+    </delete>
+    <delete id="deleteAdminRolesByAdminId" parameterType="java.lang.Integer">
+        delete
+        from
+            t_admin_role
+        where
+            adminId=#{adminId}
+    </delete>
+    <select id="selectAdminAll" resultMap="AdminRoleMap">
+        SELECT
+            a.*,
+            nameZh
+        FROM
+            t_admin a
+            LEFT JOIN t_admin_role ar ON a.id = ar.adminId
+            LEFT JOIN t_role r ON ar.rid = r.id
+        <where>
+            <if test="name!=null and name!=''">
+                and a.name like concat('%',#{name},'%')
+            </if>
+            <if test="userName!=null and userName!=''">
+                and a.username !=#{userName}
+            </if>
+        </where>
+
+    </select>
+    <update id="updateByAdmin" parameterType="com.xxxx.server.pojo.Admin">
+        update  t_admin
+        set name=#{name},phone=#{phone},telephone=#{telephone},address=#{address}
+        where id=#{id}
+    </update>
+    <update id="updatePassword" >
+        update t_admin
+        set password=#{newPass}
+        where id=#{id}
+    </update>
+</mapper>

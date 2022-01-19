@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>入职欢迎邮件</title>
+</head>
+<body>
+<h1 align="center">欢迎<p th:text="${name}"></p>来到闪电鞭大家庭</h1>
+您所在的部门：<div th:text="${departmentName}"></div><br>
+您所担任的职位：<div th:text="${jobName}"></div><br>
+地区：<div th:text="${nationName}"></div><br>
+<p>闪电鞭网络有限公司&copy;</p>
+</body>
+</html>
